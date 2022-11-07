@@ -8,102 +8,139 @@ class Node:
 class DoublyCircularLinkedList:
     def __init__(self):
         self.head = None
-        self.count = 0
+        self.count = -1
 
     def add_at_tail(self, data) -> bool:
-        # Write code here
-        new_node = Node(data)
-        if self.count > 0:
-            new_node.previous = self.end
-            self.end.next = new_node
-            self.head.previous = new_node
-            new_node.next = self.head
+    
+        if (self.head == None):
+            temp = Node(data)
+            self.head = temp
+            temp.next = temp
+            temp.previous = temp
+
         else:
-            self.head = new_node
-        self.end = new_node
-        self.count += 1
+            temp = Node(data)
+            temp.previous = self.head.previous
+            temp.next = self.head
+            self.head.previous.next=temp
+            self.head.previous = temp
+        self.count = self.count+1
+
+        
         return True
+
 
     def add_at_head(self, data) -> bool:
-        # Write code here
-        new_node = Node(data)
-        if self.count > 0:
-            new_node.next = self.head
-            new_node.previous = self.end
-            self.head.previous = new_node
-            self.end.next = new_node
+
+        if (self.head == None):
+            temp = Node(data)
+            self.head = temp
+            temp.next = temp
+            temp.previous = temp
+
         else:
-            self.end = new_node
-        self.head = new_node
-        self.count += 1
-        return True   
-    
-    def add_at_index(self, index, data) -> bool:
-        # Write code here
-        if index < 0 or index >= self.count:
-            return False
-        if index == 0:
-            return self.add_at_head(data)
-        if index == self.count:
-            return self.add_at_tail(data)
-        
-        new_node = Node(data)
-        curr_node = self.head
-        for i in range(index):
-            curr_node = curr_node.next
-        new_node.previous = curr_node.previous
-        new_node.next = curr_node
-        curr_node.previous.next = new_node
-        curr_node.previous = new_node
-        self.count += 1
+            temp = Node(data)
+            temp.previous = self.head.previous
+            temp.next = self.head
+            self.head.previous.next=temp
+            self.head.previous = temp
+            self.head = temp
+        self.count = self.count+1
+
         return True
+
+    def add_at_index(self, index, data) -> bool:
+
+        if (self.count < index):
+            return False
+
+        ind = 0
+        n = self.head
+        while(1):
+            if(index ==0):
+                return self.add_at_head(data)
+
+            elif(index == ind):
+                break
+            
+            else:
+                ind = ind + 1
+                n = n.next
+                
+            
+        temp = Node(data)
+        temp.previous = n.previous
+        temp.next = n
+        n.previous.next=temp
+        n.previous = temp
+        self.count = self.count+1
+
+ 
+        return True
+
 
     def get(self, index) -> int:
-        # Write code here
-        if index < 0 or index >= self.count:
+
+        if (self.count < index):
             return -1
-        curr_node = self.head
-        for i in range(index):
-            curr_node = curr_node.next
-        return curr_node.data
+        
+        ind = 0
+        n = self.head
+        while(1):
+            if(index == ind):
+                return n.data
+                
+            
+            else:
+                ind = ind + 1
+                n = n.next
+           
+
 
     def delete_at_index(self, index) -> bool:
-        if index < 0 or index >= self.count:
+
+
+        if (self.count < index):
             return False
-        if index == 0:
-            temp = self.head
-            temp.next.previous = self.end
-            self.end.next = temp.next
-            self.head = temp.next
-            self.count -= 1
-            return True
-        if index == self.count - 1:
-            temp = self.end
-            self.head.previous = temp.previous
-            temp.previous.next = self.head
-            self.end = temp.previous
-            self.count -= 1
-            return True
-        curr_node = self.head
-        for ind in range(index):
-            curr_node = curr_node.next
-        curr_node.previous.next = curr_node.next
-        curr_node.next.previous = curr_node.previous
-        self.count -= 1
+
+        ind = 0
+        n = self.head
+        while(1):    
+            if(index == ind):
+                break
+            
+            else:
+                ind = ind + 1
+                n = n.next
+
+        if (index == 0):
+                if (self.count != 0):
+                    self.head = n.next
+                else:
+                    self.head = None
+    
+        n.previous.next = n.next
+        n.next.previous = n.previous
+        self.count = self.count-1
+        del n
+
         return True
-        
 
     def get_previous_next(self, index) -> list:
-        # Write code here
-        if index < 0 or index >= self.count:
-            return -1
-        curr_node = self.head
-        for ind in range(index):
-            curr_node = curr_node.next
-        return [curr_node.previous.data, curr_node.next.data]
+        ind = 0
+        n = self.head
+        while(1):
+            if(index == ind):
+                break
+            
+            else:
+                ind = ind + 1
+                n = n.next
+
+        return [n.previous.data , n.next.data]
 
 
-# Do not change the following code
+#do not change the code below
 operations = []
 for specific_operation in input().split(','):
     operations.append(specific_operation.strip())
@@ -139,3 +176,5 @@ for i in range(len(operations)):
         result.append(obj.delete_at_index(data[i]))
 
 print(result)
+
+
